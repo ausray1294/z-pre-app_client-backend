@@ -1,6 +1,4 @@
-const userLogin = require('../models/userLogin')
-
-const User = require('../../db/data/users');
+const User = require('../data/dao/users');
 
 async function getAllUsers(req, res) {
   const all = await User.all();
@@ -14,7 +12,7 @@ async function getUser(req, res) {
 
 async function createUser(req, res) {
   // validation JOI
-  const user = await User.getByUsername(req.body.username);
+  const user = await User.getByEmail(req.body.email);
   if (!user) {
     const created = await User.create({ ...req.body });
     return res.json(created);
@@ -23,21 +21,8 @@ async function createUser(req, res) {
   }
 }
 
-async function loginUser(req, res) {
-  // validation JOI
-  const user = await User.getByUsername(req.body.username);
-  if (!user) {
-    const loggedIn = await userLogin({ ...req.body });
-    return res.json(loggedIn);
-  } else {
-    return res.status(409).json({ message: 'user already exists' });
-  }
-}
-
-
 module.exports = {
   getAllUsers,
   getUser,
-  createUser,
-  loginUser
+  createUser
 }

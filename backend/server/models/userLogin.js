@@ -2,7 +2,8 @@ const knex = require('knex')(require('../../knexfile').development);
 const bcrypt = require('bcrypt');
 
 const userLogin = async (username, password) => {
-  const comparePasswords = await bcrypt.compare(password, users.password);
+  const user = await knex('users').where({ username }).first()
+  const comparePasswords = await bcrypt.compare(password, user.password);
 
   if (!comparePasswords) {
     return res.status(400).json({ message: 'Invaidl username or password' });

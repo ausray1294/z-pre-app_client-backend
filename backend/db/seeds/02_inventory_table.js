@@ -25,7 +25,7 @@ exports.seed = async function (knex) {
       user_id: users[0].id,
       item_name: 'Boxers',
       description:
-        'asdfasdfasdfasdfasdfasdfasdfadsfasdfasdfaasdfasdfasdfasdfasdfasdfasdfasdfasdfaedsfasdfasdfsdfsdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfmsadfkkasdfalksdfklldlkflkasdjflklaksdfjasdfjkljsdfkljasdklflasdjfkasdjfklasdjflkasdjfkladsjfklasdjfklj',
+        'asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdaasdasdasdasdasdasdasdasdasdasdasdasdasdasd',
       quantity: 10,
     },
     {
