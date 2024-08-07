@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Divider,
-  
   FormControl,
   FormLabel,
   Input,
@@ -21,7 +20,7 @@ import Swal from 'sweetalert2';
 
 const NavBar = () => {
   const { isLoggedIn, first_name, setUser } = useContext(UserContext);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose } = useDisclosure();
   const [userDetails, setUserDetails] = useState({
     username: '',
     password: '',
@@ -135,7 +134,7 @@ const NavBar = () => {
             </VStack>
           </form>
 
-          <Button mt={4} colorScheme="blue" width="full" onClick={onOpen}>
+          <Button mt={4} colorScheme="blue" width="full">
             Create Account
           </Button>
           <CreateAccount

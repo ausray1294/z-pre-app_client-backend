@@ -1,8 +1,6 @@
-
 import {
   Heading,
   Box,
-  Image,
   Stack,
   Grid,
   GridItem,
@@ -17,7 +15,7 @@ const GeneralInventory = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'News | Struggle Bus';
+    document.title = 'General Inventory | Inventory';
   }, []);
 
   useEffect(() => {
@@ -43,10 +41,17 @@ const GeneralInventory = () => {
     return <div>...Loading</div>;
   }
 
+  const reducuceLength = (description) => {
+    if (description.length > 100) {
+      return description.slice(0, 100) + '...';
+    }
+    return description;
+  };
+
   return (
     <Box>
       <Stack>
-        <Heading>Potatoes</Heading>
+        <Heading>Inventory</Heading>
       </Stack>
       <Stack mb={5}>
         <Text>General Inventory</Text>
@@ -59,9 +64,9 @@ const GeneralInventory = () => {
             <GridItem className="inventoryItem" key={index}>
               <Card>
                 <CardBody>
-                  <Text>{item.item_name}</Text>
-                  <Text>{item.description}</Text>
-                  <Text>{item.quantity}</Text>
+                  <Text>Item: {item.item_name}</Text>
+                  <Text>Description: {reducuceLength(item.description)}</Text>
+                  <Text>Quantity: {item.quantity}</Text>
                 </CardBody>
               </Card>
             </GridItem>

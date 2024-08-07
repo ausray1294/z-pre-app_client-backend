@@ -8,7 +8,7 @@ const Footer = () => {
     <div>
       <Routes>
         <Route path="/read-me" element={<ReadMe />} />
-        <Route path="/read-me" element={<ReadMe />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
 
       <Box
