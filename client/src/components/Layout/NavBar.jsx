@@ -1,9 +1,10 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import React, { useState } from 'react';
 import {
   Box,
   Button,
   Divider,
+  Container,
   FormControl,
   FormLabel,
   Input,
@@ -48,6 +49,7 @@ const NavBar = () => {
         ...data.user,
         isLoggedIn: true,
       }));
+      console.log(data);
     } catch (error) {
       console.log('Error during Login:', error);
     }
@@ -195,11 +197,11 @@ const NavBar = () => {
       >
         Inventory
       </Button>
-      {/* <Box sx={{ pl: '16rem' }}>
+      <Box sx={{ pl: '16rem' }}>
         <Container maxW="8xl">
           <Outlet />
         </Container>
-      </Box> */}
+      </Box>
     </Box>
   );
 };

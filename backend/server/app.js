@@ -25,7 +25,7 @@ app.post('/users/login', userRoutes.loginUser)
 
 app.get('/inventory', inventoryRoute.getAllInventory);
 app.get('/inventory/:id', inventoryRoute.getInventory);
-app.get('/inventory/:user_id', inventoryRoute.getAllInventoryByUser_Id )
+app.get('/myinventory/:user_id', inventoryRoute.getAllInventoryByUser_Id )
 app.post('/inventory', inventoryRoute.createInventory);
 
 
