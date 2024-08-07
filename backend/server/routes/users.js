@@ -17,11 +17,11 @@ async function createUser(req, res) {
   const user = await User.getByUsername(req.body.username);
   if (!user) {
     const saltValue = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.body.password, saltValue);
-      const created = await User.create({
-        ...req.body,
-        password: hashedPassword
-      });
+    const hashedPassword = await bcrypt.hash(req.body.password, saltValue);
+    const created = await User.create({
+      ...req.body,
+      password: hashedPassword,
+    });
     return res.json(created);
   } else {
     return res.status(409).json({ message: 'user already exists' });
@@ -34,7 +34,7 @@ async function loginUser(req, res) {
   console.log(
     `Passed in password:${req.body.password} & ${user.username}:${user.password} are being compared`,
   );
-  const hashPassword = await bcrypt.compare(
+  const isPasswordMatch = await bcrypt.compare(
     req.body.password,
     user.password,
     (err, result) => {
@@ -45,18 +45,17 @@ async function loginUser(req, res) {
       }
 
       if (result) {
-        // Passwords match, authentication successful
         console.log('Passwords match! User authenticated.');
       } else {
-        // Passwords don't match, authentication failed
         console.log('Passwords do not match! Authentication failed.');
       }
     },
   );
-  if (user && hashPassword) {
-    return res.status(200).json(req);
+  if (isPasswordMatch) {
+    console.log('Passwords match! User logged in.');
+    return res.status(200).json({ message: 'User logged in', user });
   } else {
-    return res.status(409).json({ message: 'user not found exists' });
+    return res.status(409).json({ message: 'Passwords do not match!' });
   }
 }
 
