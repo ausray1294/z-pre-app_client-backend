@@ -6,21 +6,24 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { UserProvider } from './context/UserContext';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
+import theme from './theme/index';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <BrowserRouter>
         <UserProvider>
           <Header
-          //pushed to the side
+            sx={{ paddingTop: '2rem', paddingBottom: '2rem' }}
+            //pushed to the side
           />
           <App
-          //centered
+            //centered
           />
           <Footer
-          //bottom center
+            sx={{ paddingTop: '2rem', paddingBottom: '2rem' }}
+            //bottom center
           />
         </UserProvider>
       </BrowserRouter>

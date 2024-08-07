@@ -1,4 +1,3 @@
-const knex = require('knex')(require('../../knexfile').development);
 const bcrypt = require('bcrypt');
 
 const createUser = async (data) => {

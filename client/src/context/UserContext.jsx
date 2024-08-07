@@ -37,6 +37,7 @@ const UserProvider = ({ children }) => {
         );
       }
       const data = await response.json();
+      console.log(data);
       setUser((prevUser) => ({
         ...prevUser,
         ...data.user,

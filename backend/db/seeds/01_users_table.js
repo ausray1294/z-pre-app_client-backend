@@ -11,10 +11,11 @@ username
 password
 
 */
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 exports.seed = async function (knex) {
-  const hashedPassword = await bcrypt.hash('a123', 10);
+  const saltValue = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash('a123', saltValue);
   // Deletes ALL existing entries
   await knex('users').del();
   await knex('users').insert([

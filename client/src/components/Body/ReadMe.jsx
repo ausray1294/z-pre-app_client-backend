@@ -3,9 +3,7 @@ import { Box, Textarea } from '@chakra-ui/react';
 const ReadMe = () => {
   return (
     <Box>
-      <Textarea>
-        Words Words Words
-      </Textarea>
+      <Textarea>Words Words Words</Textarea>
     </Box>
   );
 };
