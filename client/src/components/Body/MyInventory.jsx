@@ -8,20 +8,22 @@ import {
   CardBody,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import UserContext from '../../context/UserContext';
 
-const GeneralInventory = () => {
+const MyInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user_id } = useContext(UserContext);
 
   useEffect(() => {
-    document.title = 'General Inventory | Inventory';
+    document.title = 'My Inventory | Inventory';
   }, []);
 
   useEffect(() => {
-    const fetchGeneralInventory = async () => {
+    const fetchMyInventory = async () => {
       try {
-        const res = await fetch('http://localhost:8080/inventory/');
+        const res = await fetch(`http://localhost:8080/inventory/:${user_id}`);
         if (!res.ok) {
           throw new Error('Network response failed');
         }
@@ -34,7 +36,7 @@ const GeneralInventory = () => {
       }
     };
 
-    fetchGeneralInventory();
+    fetchMyInventory();
   }, []);
 
   if (loading) {
@@ -42,6 +44,7 @@ const GeneralInventory = () => {
   }
 
   const reducuceLength = (description) => {
+    console.log(description);
     if (description.length > 100) {
       return description.slice(0, 100) + '...';
     }
@@ -77,5 +80,5 @@ const GeneralInventory = () => {
   );
 };
 
-export { GeneralInventory };
-export default GeneralInventory;
+export { MyInventory };
+export default MyInventory;
