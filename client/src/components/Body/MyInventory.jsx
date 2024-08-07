@@ -28,41 +28,40 @@ import { RxDashboard } from 'react-icons/rx';
 const MyInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { id, isLoggedIn } = useContext(UserContext);
+  const { username, isLoggedIn } = useContext(UserContext);
+  const [user_id, setUserId] = useState(null);
   const { isOpen, onClose } = useDisclosure();
   const [item, setItem] = useState({
     item_name: '',
     description: '',
     quantity: '',
-    user_id: id,
+    user_id: user_id,
   });
 
   useEffect(() => {
     document.title = 'My Inventory | Inventory';
   }, []);
 
-  const user_id = id;
+  // const addToInventory = async (newItem) => {
+  //   try {
+  //     console.log(`attempting to add ${newItem} to the inventory`);
+  //     const res = await fetch('http://localhost:8080/inventory/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(newItem),
+  //     });
 
-  const addToInventory = async (newItem) => {
-    try {
-      console.log(`attempting to add ${newItem} to the inventory`);
-      const res = await fetch('http://localhost:8080/inventory/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newItem),
-      });
-
-      if (!res.ok) {
-        console.log(`Error adding ${newItem}`);
-      }
-      const data = await res.json();
-      console.log(data);
-    } catch (error) {
-      console.log(`Error adding new item ${newItem}`, error);
-    }
-  };
+  //     if (!res.ok) {
+  //       console.log(`Error adding ${newItem}`);
+  //     }
+  //     const data = await res.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.log(`Error adding new item ${newItem}`, error);
+  //   }
+  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,7 +78,19 @@ const MyInventory = () => {
         'addToInventory was triggered by handleSubmit:',
         // addToInventory(item, id),
       );
-      await addToInventory(item);
+      const dataToPost = { ...item };
+      await fetch('http://localhost:8080/inventory/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToPost),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('Success:', data);
+        });
+      // await addToInventory(item);
       Swal.fire({
         title: 'Success!',
         text: 'User created successfully',
@@ -127,27 +138,34 @@ const MyInventory = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchMyInventory = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8080/myinventory/:${user_id}`,
-        );
-        if (!res.ok) {
-          throw new Error('Network response failed');
-        }
-        const data = await res.json();
-        setInventory(data);
-      } catch (error) {
-        console.error('error', error);
-      } finally {
-        setLoading(false);
+  const fetchMyInventory = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8080/myinventory/:${id}`);
+      if (!res.ok) {
+        throw new Error('Network response failed');
       }
-    };
-    if (isLoggedIn) {
-      fetchMyInventory();
+      const data = await res.json();
+      setInventory(data);
+    } catch (error) {
+      console.error('error', error);
+    } finally {
+      setLoading(false);
     }
-  }, [id, isLoggedIn]);
+  };
+  if (isLoggedIn) {
+    fetchMyInventory();
+  }
+
+  //why are you such a pain!!!!!!!!! Here comes double fetch
+const beginTheFetchOfMyInventory = () => {
+    fetch(`http://localhost:8080/users/:${username}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUserId(data.id);
+        console.log(user_id);
+      });
+    fetchMyInventory(user_id);
+  };
 
   if (loading) {
     return <div>...Loading</div>;
@@ -164,7 +182,7 @@ const MyInventory = () => {
   return (
     <Box>
       <Stack>
-        <Heading>Inventory</Heading>
+        <Heading>${user_id}'s Inventory</Heading>
       </Stack>
       <Button
         isOpen={isOpen}
