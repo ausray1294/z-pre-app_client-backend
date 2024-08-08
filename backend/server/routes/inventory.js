@@ -28,10 +28,16 @@ async function updateInventoryItem(req, res) {
   return res.json(updated);
 }
 
+async function deleteItem(req, res) {
+  const deleted = await Inventory.remove(req.params.id);
+  return res.json(deleted);
+}
+
 module.exports = {
   getAllInventory,
   getInventory,
   createInventory,
   getAllInventoryByUser_Id,
   updateInventoryItem,
+  deleteItem,
 };

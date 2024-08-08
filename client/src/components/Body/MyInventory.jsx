@@ -20,20 +20,44 @@ import {
   Button,
   useDisclosure,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { RxDashboard } from 'react-icons/rx';
+// import User from '../../Class/UserClass';
+import {UserContext} from '../../context/UserContext';
 
-const MyInventory = ({user}) => {
+
+
+const MyInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const { isOpen, onClose } = useDisclosure();
+  const { user } = useContext(UserContext);
   const [item, setItem] = useState({
     item_name: '',
     description: '',
     quantity: '',
-    user_id: user.getUserId(),
+    user_id: user.id,
   });
+
+  // const [accountDetails, setAccountDetails] = useState({
+  //   id: null,
+  //   first_name: '',
+  //   last_name: '',
+  //   username: '',
+  // });
+
+  // useEffect(() => {
+  //   const accDets = () => {
+  //     setAccountDetails({
+  //       id: user.id,
+  //       first_name: user.first_name,
+  //       last_name: user.last_name,
+  //       username: user.username,
+  //     });
+  //   };
+  //   accDets();
+  // }, []);
 
   useEffect(() => {
     document.title = 'My Inventory | Inventory';
@@ -107,7 +131,7 @@ const MyInventory = ({user}) => {
 
   const removeFromInventory = async (id) => {
     console.log('removing from inventory');
-    const res = await fetch(`http://localhost:8080/inventory/${id}`, {
+    const res = await fetch(`http://localhost:8080/inventory/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -137,16 +161,13 @@ const MyInventory = ({user}) => {
 
   const updateItem = async (contents) => {
     console.log('removing from inventory');
-    const res = await fetch(
-      `http://localhost:8080/inventory/${contents.item_name}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contents),
+    const res = await fetch(`http://localhost:8080/inventory/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify(contents),
+    });
     if (!res.ok) {
       console.log('Tried to delete the item but it no found');
     }
@@ -183,9 +204,8 @@ const MyInventory = ({user}) => {
     }
   };
   if (user.username) {
-    fetchMyInventory();
+    fetchMyInventory(user.id);
   }
-
 
   if (loading) {
     return <div>...Loading</div>;
@@ -202,9 +222,9 @@ const MyInventory = ({user}) => {
   return (
     <Box>
       <Stack>
-        <Heading>${user.user_id}'s Inventory</Heading>
+        <Heading>${user.first_name}'s Inventory</Heading>
       </Stack>
-      <Button onClick={fetchMyInventory(user.getUserId())}>
+      <Button onClick={fetchMyInventory(user.id)}>
         Begin Rendering Your Items
       </Button>
       <Button

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Box,
   Button,
@@ -16,11 +16,14 @@ import { RxDashboard, RxRocket } from 'react-icons/rx';
 import CreateAccount from '../../utils/CreateAccount';
 import Swal from 'sweetalert2';
 import User from '../../Class/UserClass';
+import {UserContext} from '../../context/UserContext';
+
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [myProfile, setMyProfile] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const { setUser } = useContext(UserContext);
   const [userDetails, setUserDetails] = useState({
     username: '',
     password: '',
@@ -48,7 +51,7 @@ const NavBar = () => {
             )}, but nothing returned`,
           );
         }
-        return
+        return;
       }
 
       const data = await response.json();
@@ -66,6 +69,7 @@ const NavBar = () => {
     fetch(`http://localhost:8080/users/${username}`)
       .then((res) => res.json())
       .then((data) => {
+        setUser(data);
         user.updateUserDetails(data);
         console.log(`Your user id is set to ${data.id}`);
       })
@@ -191,7 +195,7 @@ const NavBar = () => {
           <Button
             as={NavLink}
             to="/account-information"
-            state={user}
+            state={myProfile}
             variant="ghost"
             leftIcon={<RxDashboard fontSize={20} />}
             sx={{
@@ -207,7 +211,7 @@ const NavBar = () => {
       <Button
         as={NavLink}
         to="/inventory"
-        state={user}
+        state={myProfile}
         variant="ghost"
         leftIcon={<RxRocket fontSize={20} />}
         sx={{
