@@ -1,10 +1,9 @@
-import { useContext } from 'react';
 import { Box, Card, Text } from '@chakra-ui/react';
-import UserContext from '../../context/UserContext';
+import { useLocation } from 'react-router-dom';
 
 const AccountInformation = () => {
-  const { first_name, last_name, username } = useContext(UserContext);
-
+  const location = useLocation();
+  const { first_name, last_name, username } = location.state;
   return (
     <Box>
       <Card>

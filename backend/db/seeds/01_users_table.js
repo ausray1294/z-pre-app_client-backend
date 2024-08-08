@@ -15,7 +15,9 @@ const bcrypt = require('bcryptjs');
 
 exports.seed = async function (knex) {
   const saltValue = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash('a123', saltValue);
+  const ahashedPassword = await bcrypt.hash('a', saltValue);
+  const bhashedPassword = await bcrypt.hash('b', saltValue);
+  const chashedPassword = await bcrypt.hash('c', saltValue);
   // Deletes ALL existing entries
   await knex('users').del();
   await knex('users').insert([
@@ -23,19 +25,19 @@ exports.seed = async function (knex) {
       first_name: 'a',
       last_name: 'a',
       username: 'a',
-      password: hashedPassword,
+      password: ahashedPassword,
     },
     {
       first_name: 'b',
       last_name: 'b',
       username: 'b',
-      password: hashedPassword,
+      password: bhashedPassword,
     },
     {
       first_name: 'c',
       last_name: 'c',
       username: 'c',
-      password: hashedPassword,
+      password: chashedPassword,
     },
   ]);
 };
