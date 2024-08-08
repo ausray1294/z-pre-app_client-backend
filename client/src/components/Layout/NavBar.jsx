@@ -12,16 +12,12 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
 import { RxDashboard, RxRocket } from 'react-icons/rx';
 import CreateAccount from '../../utils/CreateAccount';
 import Swal from 'sweetalert2';
 import User from '../../Class/UserClass';
 
 const NavBar = () => {
-  const { setUser } = useContext(UserContext);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [myProfile, setMyProfile] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -44,17 +40,16 @@ const NavBar = () => {
 
       if (!response.ok) {
         console.log(
-          `Login request sent with ${credientials}, but nothing returned`,
+          `Login request sent with ${JSON.stringify(
+            credientials,
+          )}, but nothing returned`,
         );
       }
+
       const data = await response.json();
       setLoggedIn(true);
       setMyProfile(data);
-      setUser((prevUser) => ({
-        ...prevUser,
-        ...data.user,
-      }));
-
+      
       const { username } = credientials;
       await fetchUserData(username);
     } catch (error) {
