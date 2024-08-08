@@ -21,15 +21,14 @@ const UserProvider = ({ children }) => {
     isLoggedIn: false,
   });
 
-
-    useEffect(() => {
-      async function fetchUserData() {
-        const res = await fetch(`http://localhost:8080/users/`);
-        const data = await res.json();
-        setData(data);
-      }
-      fetchUserData();
-    }, []);
+  useEffect(() => {
+    async function fetchUserData() {
+      const res = await fetch(`http://localhost:8080/users/`);
+      const data = await res.json();
+      setData(data);
+    }
+    fetchUserData();
+  }, []);
 
   return (
     <UserContext.Provider value={{ ...user, setUser, ...data }}>
@@ -40,4 +39,3 @@ const UserProvider = ({ children }) => {
 
 export { UserProvider };
 export { UserContext };
-export default { UserContext, UserProvider };

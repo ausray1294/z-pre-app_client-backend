@@ -10,7 +10,7 @@ import ReadMe from './components/Body/ReadMe';
 import User from './Class/UserClass';
 
 function App() {
-  const [user, setUser] = useState(newUser());
+  const [user, setUser] = useState(new User());
 
   return (
     <Box ml={400} sx={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
@@ -23,10 +23,13 @@ function App() {
       </Box>
 
       <Routes>
-        <Route path="/" element={<Layout user={user} setUser={setUser}/>}>
+        <Route path="/" element={<Layout user={user} setUser={setUser} />}>
           <Route index element={<GeneralInventory />} />
-          <Route path="inventory" element={<MyInventory user={user}/>} />
-          <Route path="account-information" element={<AccountInformation user={user}/>} />
+          <Route path="inventory" element={<MyInventory user={user} />} />
+          <Route
+            path="account-information"
+            element={<AccountInformation user={user} />}
+          />
           <Route path="read-me" element={<ReadMe />} />
           <Route path="about" element={<AboutPage />} />
         </Route>

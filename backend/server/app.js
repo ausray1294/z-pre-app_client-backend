@@ -18,7 +18,7 @@ const inventoryRoute = require('./routes/inventory');
 // app.use('/inventory', inventoryRoute);
 
 app.get('/users', userRoutes.getAllUsers);
-app.get('/users/:id', userRoutes.getUser);
+app.get('/users/:username', userRoutes.getUser);
 app.post('/users', userRoutes.createUser);
 app.post('/users/login', userRoutes.loginUser);
 

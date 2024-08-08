@@ -37,6 +37,7 @@ async function create(data) {
 
 module.exports = {
   all,
+
   get,
   create,
   remove,

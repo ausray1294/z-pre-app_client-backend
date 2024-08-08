@@ -1,7 +1,7 @@
 class User {
   #password;
   constructor(
-    id = mull,
+    id = null,
     first_name = '',
     last_name = '',
     password = '',

@@ -20,10 +20,9 @@ import {
   Button,
   useDisclosure,
 } from '@chakra-ui/react';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { RxDashboard } from 'react-icons/rx';
-import { useLocation } from 'react-router-dom';
 
 const MyInventory = ({user}) => {
   const [inventory, setInventory] = useState([]);
@@ -35,8 +34,6 @@ const MyInventory = ({user}) => {
     quantity: '',
     user_id: user.getUserId(),
   });
-  const location = useLocation();
-  const { username, user_id } = location.state;
 
   useEffect(() => {
     document.title = 'My Inventory | Inventory';
@@ -185,7 +182,7 @@ const MyInventory = ({user}) => {
       setLoading(false);
     }
   };
-  if (username) {
+  if (user.username) {
     fetchMyInventory();
   }
 
@@ -205,7 +202,7 @@ const MyInventory = ({user}) => {
   return (
     <Box>
       <Stack>
-        <Heading>${user_id}'s Inventory</Heading>
+        <Heading>${user.user_id}'s Inventory</Heading>
       </Stack>
       <Button onClick={fetchMyInventory(user.getUserId())}>
         Begin Rendering Your Items
