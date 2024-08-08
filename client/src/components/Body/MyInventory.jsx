@@ -32,7 +32,6 @@ const MyInventory = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { first_name, last_name, id } = useContext(UserContext);
   const [item, setItem] = useState({
-    id: null,
     item_name: '',
     description: '',
     quantity: '',
@@ -252,7 +251,7 @@ const MyInventory = () => {
                 <FormControl id="quantity" isRequired>
                   <FormLabel>quantity</FormLabel>
                   <Input
-                    type="integer"
+                    type="number"
                     name="quantity"
                     value={item.quantity}
                     onChange={handleChange}

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, HStack, Card, Heading } from '@chakra-ui/react';
 import MyInventory from './components/Body/MyInventory';
 import GeneralInventory from './components/Body/GeneralInventory';
 import AccountInformation from './components/Body/AccountInformation';
@@ -13,27 +13,44 @@ function App() {
   const [user, setUser] = useState(new User());
 
   return (
-    <Box ml={400} sx={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+    <Box
+      ml={280}
+      sx={{
+        paddingTop: '2rem',
+        paddingBottom: '2rem',
+        bg: 'gray.200',
+        border: 'gray.700',
+      }}
+    >
       <Box>
         <Heading>Painful App</Heading>
       </Box>
 
       <Box>
-        <GeneralInventory />
+        <HStack
+          mb={40}
+          sx={{
+            bg: 'gray.200',
+            border: 'gray.700',
+          }}
+        >
+          <GeneralInventory />
+        </HStack>
       </Box>
-
-      <Routes>
-        <Route path="/" element={<Layout user={user} setUser={setUser} />}>
-          <Route index element={<GeneralInventory />} />
-          <Route path="inventory" element={<MyInventory user={user} />} />
-          <Route
-            path="account-information"
-            element={<AccountInformation user={user} />}
-          />
-          <Route path="read-me" element={<ReadMe />} />
-          <Route path="about" element={<AboutPage />} />
-        </Route>
-      </Routes>
+      <Card>
+        <Routes>
+          <Route path="/" element={<Layout user={user} setUser={setUser} />}>
+            <Route index element={<GeneralInventory />} />
+            <Route path="inventory" element={<MyInventory user={user} />} />
+            <Route
+              path="account-information"
+              element={<AccountInformation user={user} />}
+            />
+            <Route path="read-me" element={<ReadMe />} />
+            <Route path="about" element={<AboutPage />} />
+          </Route>
+        </Routes>
+      </Card>
     </Box>
   );
 }
