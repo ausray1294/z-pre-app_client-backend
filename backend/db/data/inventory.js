@@ -14,8 +14,9 @@ async function getByUserId(user_id) {
   return results;
 }
 
-async function remove(id) {
-  const results = await knex('inventory').where({ id }).del().returning('*');
+async function remove(item_name) {
+  console.log()
+  const results = await knex('inventory').where({ item_name }).del().returning('*');
   return results[0];
 }
 
