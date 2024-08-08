@@ -19,8 +19,9 @@ import CreateAccount from '../../utils/CreateAccount';
 import Swal from 'sweetalert2';
 
 const NavBar = () => {
-  const { isLoggedIn, first_name, setUser } = useContext(UserContext);
-  const { isOpen, onClose } = useDisclosure();
+  const { isLoggedIn, setUser } = useContext(UserContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [myProfile, setMyProfile] = useState(null);
   const [userDetails, setUserDetails] = useState({
     username: '',
     password: '',
@@ -43,6 +44,7 @@ const NavBar = () => {
         );
       }
       const data = await response.json();
+      setMyProfile(data);
       setUser((prevUser) => ({
         ...prevUser,
         ...data.user,
@@ -134,7 +136,7 @@ const NavBar = () => {
             </VStack>
           </form>
 
-          <Button mt={4} colorScheme="blue" width="full">
+          <Button mt={4} colorScheme="blue" width="full" onClick={onOpen}>
             Create Account
           </Button>
           <CreateAccount
@@ -166,10 +168,12 @@ const NavBar = () => {
         </Box>
       ) : (
         <Box>
-          <Text>Welcome {first_name}</Text>
+          <Text>Welcome {myProfile.first_name}
+          </Text>
           <Button
             as={NavLink}
             to="/account-information"
+            state={myProfile}
             variant="ghost"
             leftIcon={<RxDashboard fontSize={20} />}
             sx={{
@@ -185,6 +189,7 @@ const NavBar = () => {
       <Button
         as={NavLink}
         to="/inventory"
+        state={myProfile}
         variant="ghost"
         leftIcon={<RxRocket fontSize={20} />}
         sx={{
