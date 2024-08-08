@@ -32,6 +32,7 @@ const MyInventory = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { first_name, last_name, id } = useContext(UserContext);
   const [item, setItem] = useState({
+    id: null,
     item_name: '',
     description: '',
     quantity: '',
@@ -43,10 +44,6 @@ const MyInventory = () => {
   useEffect(() => {
     document.title = 'My Inventory | Inventory';
   }, []);
-
-  useEffect(() => {
-    fetchMyInventory(item.user_id);
-  }, [item.user_id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,14 +91,14 @@ const MyInventory = () => {
     }
   };
 
-  const removeFromInventory = async (id) => {
+  const removeFromInventory = async (item) => {
     console.log('removing from inventory');
     const res = await fetch(`http://localhost:8080/inventory/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(id),
+      body: JSON.stringify(item),
     });
     if (!res.ok) {
       console.log('Tried to delete the item but it no found');
@@ -109,7 +106,7 @@ const MyInventory = () => {
     setInventory((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleRemoveItem = (id) => {
+  const handleRemoveItem = (item) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'This item will be removed from your inventory.',
@@ -120,7 +117,7 @@ const MyInventory = () => {
       cancelButtonColor: '#d33',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await removeFromInventory(id);
+        await removeFromInventory(item);
       }
     });
   };
@@ -135,7 +132,7 @@ const MyInventory = () => {
       body: JSON.stringify(contents),
     });
     if (!res.ok) {
-      console.log('Tried to delete the item but it no found');
+      console.log('Tried to update item but i no see it');
     }
     setInventory((prev) =>
       prev.map((item) => (item.id === contents.id ? contents : item)),
@@ -188,9 +185,9 @@ const MyInventory = () => {
   //   fetchMyInventory(id);
   // }
 
-  if (loading) {
-    return <div>...Loading</div>;
-  }
+  // if (loading) {
+  //   return <div>...Loading</div>;
+  // }
 
   const reducuceLength = (description) => {
     console.log(description);
@@ -211,8 +208,7 @@ const MyInventory = () => {
         Begin Rendering Your Items
       </Button>
       <Button
-        isOpen={isOpen}
-        onClose={onClose}
+        onClick={onOpen}
         variant="ghost"
         leftIcon={<RxDashboard fontSize={20} />}
         sx={{
@@ -284,39 +280,45 @@ const MyInventory = () => {
       ) : (
         <Stack mb={5}>
           <Text>General Inventory</Text>
-          <Grid
-            className="inventoryList"
-            templateColumns="repeat(3, 1fr)"
-            gap={6}
-          >
-            {inventory.map((item, index) => (
-              <GridItem className="inventoryItem" key={index}>
-                <Card>
-                  <CardBody>
-                    <Text>Item: {item.item_name}</Text>
-                    <Text>Description: {reducuceLength(item.description)}</Text>
-                    <Text>Quantity: {item.quantity}</Text>
-                    <Button
-                      onClick={() => handleEditingItem(item)}
-                      variant="ghost"
-                      leftIcon={<RxDashboard fontSize={20} />}
-                      sx={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'start',
-                      }}
-                    >
-                      Edit Your Item
-                    </Button>
+          {loading ? (
+            <div>...Loading</div>
+          ) : (
+            <Grid
+              className="inventoryList"
+              templateColumns="repeat(3, 1fr)"
+              gap={6}
+            >
+              {inventory.map((item, index) => (
+                <GridItem className="inventoryItem" key={index}>
+                  <Card>
+                    <CardBody>
+                      <Text>Item: {item.item_name}</Text>
+                      <Text>
+                        Description: {reducuceLength(item.description)}
+                      </Text>
+                      <Text>Quantity: {item.quantity}</Text>
+                      <Button
+                        onClick={() => handleEditingItem(item)}
+                        variant="ghost"
+                        leftIcon={<RxDashboard fontSize={20} />}
+                        sx={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'start',
+                        }}
+                      >
+                        Edit Your Item
+                      </Button>
 
-                    <Button onClick={() => handleRemoveItem(item.id)}>
-                      Remove Item
-                    </Button>
-                  </CardBody>
-                </Card>
-              </GridItem>
-            ))}
-          </Grid>
+                      <Button onClick={() => handleRemoveItem(item.item_name)}>
+                        Remove Item
+                      </Button>
+                    </CardBody>
+                  </Card>
+                </GridItem>
+              ))}
+            </Grid>
+          )}
         </Stack>
       )}
     </Box>
