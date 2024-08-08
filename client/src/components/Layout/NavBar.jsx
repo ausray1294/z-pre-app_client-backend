@@ -30,7 +30,7 @@ const NavBar = () => {
   const loginUser = async (credientials) => {
     console.log(credientials);
     try {
-      const response = await fetch('http://localhost:8080/users/login', {
+      const response = await fetch(`http://localhost:8080/users/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,17 +39,22 @@ const NavBar = () => {
       });
 
       if (!response.ok) {
-        console.log(
-          `Login request sent with ${JSON.stringify(
-            credientials,
-          )}, but nothing returned`,
-        );
+        if (response.status === 409) {
+          console.log('Conflict: on server side');
+        } else {
+          console.log(
+            `Login request sent with ${JSON.stringify(
+              credientials,
+            )}, but nothing returned`,
+          );
+        }
+        return
       }
 
       const data = await response.json();
       setLoggedIn(true);
-      setMyProfile(data);
-      
+      setMyProfile(data.user);
+
       const { username } = credientials;
       await fetchUserData(username);
     } catch (error) {
@@ -116,7 +121,7 @@ const NavBar = () => {
           borderRadius="lg"
           boxShadow="lg"
         >
-          <Text>Welcome! Please Create An Account</Text>
+          <Text>Welcome! Please Create An Account or Login!!</Text>
           <Heading as="h1" mb={6} textAlign="center">
             Login
           </Heading>
