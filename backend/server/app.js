@@ -18,16 +18,15 @@ const inventoryRoute = require('./routes/inventory');
 // app.use('/inventory', inventoryRoute);
 
 app.get('/users', userRoutes.getAllUsers);
-app.get('/users/:id', userRoutes.getUser);
+app.get('/users/:username', userRoutes.getUser);
 app.post('/users', userRoutes.createUser);
-app.post('/users/login', userRoutes.loginUser)
-
+app.post('/users/login', userRoutes.loginUser);
 
 app.get('/inventory', inventoryRoute.getAllInventory);
 app.get('/inventory/:id', inventoryRoute.getInventory);
-app.get('/inventory/:user_id', inventoryRoute.getAllInventoryByUser_Id )
+app.get('/myinventory/:id', inventoryRoute.getAllInventoryByUser_Id);
 app.post('/inventory', inventoryRoute.createInventory);
-
+app.put('/inventory/', inventoryRoute.updateInventoryItem);
+app.delete('/inventory/', inventoryRoute.deleteItem);
 
 module.exports = app;
-

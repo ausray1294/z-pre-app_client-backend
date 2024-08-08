@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Box,
   Button,
@@ -12,25 +12,28 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
 import { RxDashboard, RxRocket } from 'react-icons/rx';
 import CreateAccount from '../../utils/CreateAccount';
 import Swal from 'sweetalert2';
+import User from '../../Class/UserClass';
+import {UserContext} from '../../context/UserContext';
+
 
 const NavBar = () => {
-  const { isLoggedIn, setUser } = useContext(UserContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [myProfile, setMyProfile] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const { setUser } = useContext(UserContext);
   const [userDetails, setUserDetails] = useState({
     username: '',
     password: '',
   });
+  const user = new User();
 
   const loginUser = async (credientials) => {
     console.log(credientials);
     try {
-      const response = await fetch('http://localhost:8080/users/login', {
+      const response = await fetch(`http://localhost:8080/users/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,20 +42,40 @@ const NavBar = () => {
       });
 
       if (!response.ok) {
-        console.log(
-          `Login request sent with ${credientials}, but nothing returned`,
-        );
+        if (response.status === 409) {
+          console.log('Conflict: on server side');
+        } else {
+          console.log(
+            `Login request sent with ${JSON.stringify(
+              credientials,
+            )}, but nothing returned`,
+          );
+        }
+        return;
       }
+
       const data = await response.json();
-      setMyProfile(data);
-      setUser((prevUser) => ({
-        ...prevUser,
-        ...data.user,
-        isLoggedIn: true,
-      }));
+      setLoggedIn(true);
+      setMyProfile(data.user);
+
+      const { username } = credientials;
+      await fetchUserData(username);
     } catch (error) {
       console.log('Error during Login:', error);
     }
+  };
+
+  const fetchUserData = async (username) => {
+    fetch(`http://localhost:8080/users/${username}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data);
+        user.updateUserDetails(data);
+        console.log(`Your user id is set to ${data.id}`);
+      })
+      .catch((err) => {
+        console.log(`issues adding a user`, err);
+      });
   };
 
   const handleChange = (e) => {
@@ -92,7 +115,7 @@ const NavBar = () => {
   return (
     <Box>
       <Divider />
-      {!isLoggedIn ? (
+      {!loggedIn ? (
         <Box
           maxW="md"
           mx="auto"
@@ -102,7 +125,7 @@ const NavBar = () => {
           borderRadius="lg"
           boxShadow="lg"
         >
-          <Text>Welcome! Please Create An Account</Text>
+          <Text>Welcome! Please Create An Account or Login!!</Text>
           <Heading as="h1" mb={6} textAlign="center">
             Login
           </Heading>
@@ -168,8 +191,7 @@ const NavBar = () => {
         </Box>
       ) : (
         <Box>
-          <Text>Welcome {myProfile.first_name}
-          </Text>
+          <Text>Welcome {myProfile.first_name}</Text>
           <Button
             as={NavLink}
             to="/account-information"

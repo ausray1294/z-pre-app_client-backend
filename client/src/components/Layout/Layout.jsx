@@ -4,10 +4,10 @@ import Header from './Header';
 import Footer from './Footer';
 import { Box } from '@chakra-ui/react';
 
-const Layout = () => {
+const Layout = ({user, setUser}) => {
   return (
     <Box>
-      <Header sx={{ paddingTop: '2rem', paddingBottom: '2rem' }} />
+      <Header user={user} setUser={setUser} sx={{ paddingTop: '2rem', paddingBottom: '2rem' }} />
       <Box sx={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
         <Outlet />
       </Box>

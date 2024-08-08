@@ -6,7 +6,7 @@ async function getAllInventory(req, res) {
 }
 
 async function getAllInventoryByUser_Id(req, res) {
-  const { user_id } = req.body;
+  const { user_id } = req.params;
   const all = await Inventory.getByUserId(user_id);
   return res.json(all);
 }
@@ -22,9 +22,23 @@ async function createInventory(req, res) {
   return res.json(created);
 }
 
+async function updateInventoryItem(req, res) {
+  const { id } = req.params;
+  const updated = await Inventory.update(id, req.params);
+  return res.json(updated);
+}
+
+async function deleteItem(req, res) {
+  const deleted = await Inventory.remove(req.params.id);
+  return res.json(deleted);
+}
+
 module.exports = {
   getAllInventory,
   getInventory,
   createInventory,
   getAllInventoryByUser_Id,
+  updateInventoryItem,
+  deleteItem,
 };
+

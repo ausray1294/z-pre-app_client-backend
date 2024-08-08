@@ -8,7 +8,8 @@ async function getAllUsers(req, res) {
 }
 
 async function getUser(req, res) {
-  const user = await User.get(req.params.id);
+  const username = req.params.username
+  const user = await User.getByUsername(username);
   return res.send(user);
 }
 
@@ -30,33 +31,21 @@ async function createUser(req, res) {
 
 async function loginUser(req, res) {
   // validation JOI
-  const user = await User.getByUsername(req.body.username);
+  const { username, password } = req.body;
   console.log(
-    `Passed in password:${req.body.password} & ${user.username}:${user.password} are being compared`,
+    `At loginUser in routes: ${username} and ${password} were passed in`,
   );
-  const isPasswordMatch = await bcrypt.compare(
-    req.body.password,
-    user.password,
-    (err, result) => {
-      if (err) {
-        // Handle error
-        console.error('Error comparing passwords:', err);
-        return;
-      }
-
-      if (result) {
-        console.log('Passwords match! User authenticated.');
-      } else {
-        console.log('Passwords do not match! Authentication failed.');
-      }
-    },
+  const user = await User.getByUsername(username);
+  console.log(
+    `Passed in password:${password} & ${username}:${user.password} are being compared`,
   );
-  if (isPasswordMatch) {
-    console.log('Passwords match! User logged in.');
-    return res.status(200).json({ message: 'User logged in', user });
-  } else {
+  const isPasswordMatch = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatch) {
+    console.log('Passwords do not match! Authentication failed.');
     return res.status(409).json({ message: 'Passwords do not match!' });
   }
+  console.log('Passwords match! User logged in.');
+  return res.status(200).json({ message: 'User logged in', user });
 }
 
 module.exports = {
