@@ -25,7 +25,7 @@ exports.seed = async function (knex) {
       user_id: users[0].id,
       item_name: 'Boxers',
       description:
-        'asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdaasdasdasdasdasdasdasdasdasdasdasdasdasdasd',
+        ' This is a well thought out description that goes something like this: asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdd\nasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdas\ndasd',
       quantity: 10,
     },
     {

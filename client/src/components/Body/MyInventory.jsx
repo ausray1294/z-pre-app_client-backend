@@ -24,65 +24,29 @@ import React, { useEffect, useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { RxDashboard } from 'react-icons/rx';
 // import User from '../../Class/UserClass';
-import {UserContext} from '../../context/UserContext';
-
-
+import { UserContext } from '../../context/UserContext';
 
 const MyInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isOpen, onClose } = useDisclosure();
-  const { user } = useContext(UserContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { first_name, last_name, id } = useContext(UserContext);
   const [item, setItem] = useState({
     item_name: '',
     description: '',
     quantity: '',
-    user_id: user.id,
+    user_id: id,
   });
-
-  // const [accountDetails, setAccountDetails] = useState({
-  //   id: null,
-  //   first_name: '',
-  //   last_name: '',
-  //   username: '',
-  // });
-
-  // useEffect(() => {
-  //   const accDets = () => {
-  //     setAccountDetails({
-  //       id: user.id,
-  //       first_name: user.first_name,
-  //       last_name: user.last_name,
-  //       username: user.username,
-  //     });
-  //   };
-  //   accDets();
-  // }, []);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
     document.title = 'My Inventory | Inventory';
   }, []);
 
-  // const addToInventory = async (newItem) => {
-  //   try {
-  //     console.log(`attempting to add ${newItem} to the inventory`);
-  //     const res = await fetch('http://localhost:8080/inventory/', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(newItem),
-  //     });
-
-  //     if (!res.ok) {
-  //       console.log(`Error adding ${newItem}`);
-  //     }
-  //     const data = await res.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.log(`Error adding new item ${newItem}`, error);
-  //   }
-  // };
+  useEffect(() => {
+    fetchMyInventory(item.user_id);
+  }, [item.user_id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -110,6 +74,7 @@ const MyInventory = () => {
         .then((res) => res.json())
         .then((data) => {
           console.log('Success:', data);
+          setInventory((prev) => [...prev, data]);
         });
       // await addToInventory(item);
       Swal.fire({
@@ -141,6 +106,7 @@ const MyInventory = () => {
     if (!res.ok) {
       console.log('Tried to delete the item but it no found');
     }
+    setInventory((prev) => prev.filter((item) => item.id !== id));
   };
 
   const handleRemoveItem = (id) => {
@@ -171,22 +137,37 @@ const MyInventory = () => {
     if (!res.ok) {
       console.log('Tried to delete the item but it no found');
     }
+    setInventory((prev) =>
+      prev.map((item) => (item.id === contents.id ? contents : item)),
+    );
   };
 
-  const handleUpdateItem = (id) => {
+  const handleEditingItem = (item) => {
+    setEditingItem(item);
+    setItem({
+      item_name: item.item_name,
+      description: item.description,
+      quantity: item.quantity,
+      user_id: id,
+    });
+    setIsUpdating(true);
+    onOpen();
+  };
+
+  const handleUpdateItem = async (e) => {
+    await updateItem({ ...editingItem, ...item });
     Swal.fire({
-      title: 'Updating Item',
-      text: 'This will change the item information.',
-      icon: 'warning',
+      title: 'Success',
+      text: 'Item updated.',
+      icon: 'success',
       showCancelButton: true,
-      confirmButtonText: 'Yes, update it',
+      confirmButtonText: 'OK',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await updateItem(id);
-      }
     });
+    onClose();
+    setIsUpdating(false);
+    setEditingItem(null);
   };
 
   const fetchMyInventory = async (id) => {
@@ -203,9 +184,9 @@ const MyInventory = () => {
       setLoading(false);
     }
   };
-  if (user.username) {
-    fetchMyInventory(user.id);
-  }
+  // if (username) {
+  //   fetchMyInventory(id);
+  // }
 
   if (loading) {
     return <div>...Loading</div>;
@@ -222,9 +203,11 @@ const MyInventory = () => {
   return (
     <Box>
       <Stack>
-        <Heading>${user.first_name}'s Inventory</Heading>
+        <Heading>
+          ${first_name} ${last_name}'s Inventory
+        </Heading>
       </Stack>
-      <Button onClick={fetchMyInventory(user.id)}>
+      <Button onClick={() => fetchMyInventory(id)}>
         Begin Rendering Your Items
       </Button>
       <Button
@@ -244,10 +227,12 @@ const MyInventory = () => {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Create Item</ModalHeader>
+            <ModalHeader>
+              {isUpdating ? 'Update Your Item' : 'Create A New Item'}
+            </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={isUpdating ? handleUpdateItem : handleSubmit}>
                 <FormControl id="item_name" isRequired>
                   <FormLabel>Item Name</FormLabel>
                   <Input
@@ -280,7 +265,9 @@ const MyInventory = () => {
                 </FormControl>
 
                 <Button mt={4} colorScheme="teal" type="submit">
-                  Add New Item
+                  {isUpdating
+                    ? 'Confirm Item Update'
+                    : 'Press Here To Add New Item'}
                 </Button>
               </form>
             </ModalBody>
@@ -310,8 +297,7 @@ const MyInventory = () => {
                     <Text>Description: {reducuceLength(item.description)}</Text>
                     <Text>Quantity: {item.quantity}</Text>
                     <Button
-                      isOpen={isOpen}
-                      onClose={onClose}
+                      onClick={() => handleEditingItem(item)}
                       variant="ghost"
                       leftIcon={<RxDashboard fontSize={20} />}
                       sx={{
@@ -322,57 +308,10 @@ const MyInventory = () => {
                     >
                       Edit Your Item
                     </Button>
-                    <Modal isOpen={isOpen} onClose={onClose}>
-                      <ModalOverlay />
-                      <ModalContent>
-                        <ModalHeader>Update Item</ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                          <form onSubmit={handleUpdateItem}>
-                            <FormControl id="item_name" isRequired>
-                              <FormLabel>Item Name</FormLabel>
-                              <Input
-                                type="text"
-                                name="item_name"
-                                value={item.item_name}
-                                onChange={handleChange}
-                                placeholder="Item Name"
-                              />
-                            </FormControl>
-                            <FormControl id="description" isRequired>
-                              <FormLabel>Description</FormLabel>
-                              <Input
-                                type="text"
-                                name="description"
-                                value={item.description}
-                                onChange={handleChange}
-                                placeholder="Description"
-                              />
-                            </FormControl>
-                            <FormControl id="quantity" isRequired>
-                              <FormLabel>Quantity</FormLabel>
-                              <Input
-                                type="integer"
-                                name="quantity"
-                                value={item.quantity}
-                                onChange={handleChange}
-                                placeholder="Quantity"
-                              />
-                            </FormControl>
 
-                            <Button mt={4} colorScheme="teal" type="submit">
-                              Update Item
-                            </Button>
-                          </form>
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button colorScheme="blue" mr={3} onClick={onClose}>
-                            Close
-                          </Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
-                    <Button onClick={handleRemoveItem(item.id)}></Button>
+                    <Button onClick={() => handleRemoveItem(item.id)}>
+                      Remove Item
+                    </Button>
                   </CardBody>
                 </Card>
               </GridItem>

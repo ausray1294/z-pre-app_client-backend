@@ -6,7 +6,7 @@ async function getAllInventory(req, res) {
 }
 
 async function getAllInventoryByUser_Id(req, res) {
-  const { user_id } = req.body;
+  const { user_id } = req.params;
   const all = await Inventory.getByUserId(user_id);
   return res.json(all);
 }
@@ -41,3 +41,4 @@ module.exports = {
   updateInventoryItem,
   deleteItem,
 };
+
