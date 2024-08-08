@@ -21,21 +21,19 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React, { useEffect, useState, useContext } from 'react';
-import UserContext from '../../context/UserContext';
 import Swal from 'sweetalert2';
 import { RxDashboard } from 'react-icons/rx';
 import { useLocation } from 'react-router-dom';
 
-const MyInventory = () => {
+const MyInventory = ({user}) => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isLoggedIn } = useContext(UserContext);
   const { isOpen, onClose } = useDisclosure();
   const [item, setItem] = useState({
     item_name: '',
     description: '',
     quantity: '',
-    user_id: user_id,
+    user_id: user.getUserId(),
   });
   const location = useLocation();
   const { username, user_id } = location.state;
@@ -112,7 +110,7 @@ const MyInventory = () => {
 
   const removeFromInventory = async (id) => {
     console.log('removing from inventory');
-    const res = await fetch(`http://localhost:8080/inventory/:${id}`, {
+    const res = await fetch(`http://localhost:8080/inventory/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -142,13 +140,16 @@ const MyInventory = () => {
 
   const updateItem = async (contents) => {
     console.log('removing from inventory');
-    const res = await fetch(`http://localhost:8080/inventory/:${item_name}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      `http://localhost:8080/inventory/${contents.item_name}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contents),
       },
-      body: JSON.stringify(contents),
-    });
+    );
     if (!res.ok) {
       console.log('Tried to delete the item but it no found');
     }
@@ -172,7 +173,7 @@ const MyInventory = () => {
 
   const fetchMyInventory = async (id) => {
     try {
-      const res = await fetch(`http://localhost:8080/myinventory/:${id}`);
+      const res = await fetch(`http://localhost:8080/myinventory/${id}`);
       if (!res.ok) {
         throw new Error('Network response failed');
       }
@@ -184,20 +185,10 @@ const MyInventory = () => {
       setLoading(false);
     }
   };
-  if (isLoggedIn) {
+  if (username) {
     fetchMyInventory();
   }
 
-  //why are you such a pain!!!!!!!!! Here comes double fetch
-  const beginTheFetchOfMyInventory = () => {
-    fetch(`http://localhost:8080/users/:${username}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUserId(data.id);
-        console.log(user_id);
-      });
-    fetchMyInventory(user_id);
-  };
 
   if (loading) {
     return <div>...Loading</div>;
@@ -216,7 +207,7 @@ const MyInventory = () => {
       <Stack>
         <Heading>${user_id}'s Inventory</Heading>
       </Stack>
-      <Button onClick={beginTheFetchOfMyInventory}>
+      <Button onClick={fetchMyInventory(user.getUserId())}>
         Begin Rendering Your Items
       </Button>
       <Button

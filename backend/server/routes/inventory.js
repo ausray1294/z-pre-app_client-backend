@@ -22,9 +22,16 @@ async function createInventory(req, res) {
   return res.json(created);
 }
 
+async function updateInventoryItem(req, res) {
+  const { id } = req.params;
+  const updated = await Inventory.update(id, req.params);
+  return res.json(updated);
+}
+
 module.exports = {
   getAllInventory,
   getInventory,
   createInventory,
   getAllInventoryByUser_Id,
+  updateInventoryItem,
 };

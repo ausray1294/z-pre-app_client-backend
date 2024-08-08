@@ -21,7 +21,7 @@ const UserProvider = ({ children }) => {
     isLoggedIn: false,
   });
 
-  if (isLoggedIn)
+
     useEffect(() => {
       async function fetchUserData() {
         const res = await fetch(`http://localhost:8080/users/`);

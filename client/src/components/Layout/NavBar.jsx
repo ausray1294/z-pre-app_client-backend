@@ -17,15 +17,19 @@ import { UserContext } from '../../context/UserContext';
 import { RxDashboard, RxRocket } from 'react-icons/rx';
 import CreateAccount from '../../utils/CreateAccount';
 import Swal from 'sweetalert2';
+import User from '../../Class/UserClass';
 
 const NavBar = () => {
-  const { isLoggedIn, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [myProfile, setMyProfile] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [userDetails, setUserDetails] = useState({
     username: '',
     password: '',
   });
+  const user = new User();
 
   const loginUser = async (credientials) => {
     console.log(credientials);
@@ -44,15 +48,30 @@ const NavBar = () => {
         );
       }
       const data = await response.json();
+      setLoggedIn(true);
       setMyProfile(data);
       setUser((prevUser) => ({
         ...prevUser,
         ...data.user,
-        isLoggedIn: true,
       }));
+
+      const { username } = credientials;
+      await fetchUserData(username);
     } catch (error) {
       console.log('Error during Login:', error);
     }
+  };
+
+  const fetchUserData = async (username) => {
+    fetch(`http://localhost:8080/users/${username}`)
+      .then((res) => res.json())
+      .then((data) => {
+        user.updateUserDetails(data);
+        console.log(`Your user id is set to ${data.id}`);
+      })
+      .catch((err) => {
+        console.log(`issues adding a user`, err);
+      });
   };
 
   const handleChange = (e) => {
@@ -92,7 +111,7 @@ const NavBar = () => {
   return (
     <Box>
       <Divider />
-      {!isLoggedIn ? (
+      {!loggedIn ? (
         <Box
           maxW="md"
           mx="auto"
@@ -168,12 +187,11 @@ const NavBar = () => {
         </Box>
       ) : (
         <Box>
-          <Text>Welcome {myProfile.first_name}
-          </Text>
+          <Text>Welcome {myProfile.first_name}</Text>
           <Button
             as={NavLink}
             to="/account-information"
-            state={myProfile}
+            state={user}
             variant="ghost"
             leftIcon={<RxDashboard fontSize={20} />}
             sx={{
@@ -189,7 +207,7 @@ const NavBar = () => {
       <Button
         as={NavLink}
         to="/inventory"
-        state={myProfile}
+        state={user}
         variant="ghost"
         leftIcon={<RxRocket fontSize={20} />}
         sx={{
