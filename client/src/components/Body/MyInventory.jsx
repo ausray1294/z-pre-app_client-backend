@@ -24,12 +24,12 @@ import React, { useEffect, useState, useContext } from 'react';
 import UserContext from '../../context/UserContext';
 import Swal from 'sweetalert2';
 import { RxDashboard } from 'react-icons/rx';
+import { useLocation } from 'react-router-dom';
 
 const MyInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { username, isLoggedIn } = useContext(UserContext);
-  const [user_id, setUserId] = useState(null);
+  const { isLoggedIn } = useContext(UserContext);
   const { isOpen, onClose } = useDisclosure();
   const [item, setItem] = useState({
     item_name: '',
@@ -37,6 +37,8 @@ const MyInventory = () => {
     quantity: '',
     user_id: user_id,
   });
+  const location = useLocation();
+  const { username, user_id } = location.state;
 
   useEffect(() => {
     document.title = 'My Inventory | Inventory';
@@ -138,6 +140,36 @@ const MyInventory = () => {
     });
   };
 
+  const updateItem = async (contents) => {
+    console.log('removing from inventory');
+    const res = await fetch(`http://localhost:8080/inventory/:${item_name}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(contents),
+    });
+    if (!res.ok) {
+      console.log('Tried to delete the item but it no found');
+    }
+  };
+
+  const handleUpdateItem = (id) => {
+    Swal.fire({
+      title: 'Updating Item',
+      text: 'This will change the item information.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, update it',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await updateItem(id);
+      }
+    });
+  };
+
   const fetchMyInventory = async (id) => {
     try {
       const res = await fetch(`http://localhost:8080/myinventory/:${id}`);
@@ -157,7 +189,7 @@ const MyInventory = () => {
   }
 
   //why are you such a pain!!!!!!!!! Here comes double fetch
-const beginTheFetchOfMyInventory = () => {
+  const beginTheFetchOfMyInventory = () => {
     fetch(`http://localhost:8080/users/:${username}`)
       .then((res) => res.json())
       .then((data) => {
@@ -184,6 +216,9 @@ const beginTheFetchOfMyInventory = () => {
       <Stack>
         <Heading>${user_id}'s Inventory</Heading>
       </Stack>
+      <Button onClick={beginTheFetchOfMyInventory}>
+        Begin Rendering Your Items
+      </Button>
       <Button
         isOpen={isOpen}
         onClose={onClose}
@@ -201,7 +236,7 @@ const beginTheFetchOfMyInventory = () => {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Create Account</ModalHeader>
+            <ModalHeader>Create Item</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <form onSubmit={handleSubmit}>
@@ -232,7 +267,7 @@ const beginTheFetchOfMyInventory = () => {
                     name="quantity"
                     value={item.quantity}
                     onChange={handleChange}
-                    placeholder="Username"
+                    placeholder="Quantity"
                   />
                 </FormControl>
 
@@ -266,7 +301,69 @@ const beginTheFetchOfMyInventory = () => {
                     <Text>Item: {item.item_name}</Text>
                     <Text>Description: {reducuceLength(item.description)}</Text>
                     <Text>Quantity: {item.quantity}</Text>
+                    <Button
+                      isOpen={isOpen}
+                      onClose={onClose}
+                      variant="ghost"
+                      leftIcon={<RxDashboard fontSize={20} />}
+                      sx={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'start',
+                      }}
+                    >
+                      Edit Your Item
+                    </Button>
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Update Item</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                          <form onSubmit={handleUpdateItem}>
+                            <FormControl id="item_name" isRequired>
+                              <FormLabel>Item Name</FormLabel>
+                              <Input
+                                type="text"
+                                name="item_name"
+                                value={item.item_name}
+                                onChange={handleChange}
+                                placeholder="Item Name"
+                              />
+                            </FormControl>
+                            <FormControl id="description" isRequired>
+                              <FormLabel>Description</FormLabel>
+                              <Input
+                                type="text"
+                                name="description"
+                                value={item.description}
+                                onChange={handleChange}
+                                placeholder="Description"
+                              />
+                            </FormControl>
+                            <FormControl id="quantity" isRequired>
+                              <FormLabel>Quantity</FormLabel>
+                              <Input
+                                type="integer"
+                                name="quantity"
+                                value={item.quantity}
+                                onChange={handleChange}
+                                placeholder="Quantity"
+                              />
+                            </FormControl>
 
+                            <Button mt={4} colorScheme="teal" type="submit">
+                              Update Item
+                            </Button>
+                          </form>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button colorScheme="blue" mr={3} onClick={onClose}>
+                            Close
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
                     <Button onClick={handleRemoveItem(item.id)}></Button>
                   </CardBody>
                 </Card>
