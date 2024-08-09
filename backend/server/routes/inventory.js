@@ -24,7 +24,7 @@ async function createInventory(req, res) {
 
 async function updateInventoryItem(req, res) {
   const { id } = req.params;
-  const updated = await Inventory.update(id, req);
+  const updated = await Inventory.update(id, req.body);
   return res.json(updated);
 }
 

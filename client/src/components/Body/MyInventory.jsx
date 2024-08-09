@@ -121,9 +121,9 @@ const MyInventory = () => {
     });
   };
 
-  const updateItem = async (contents) => {
-    console.log('removing from inventory');
-    const res = await fetch(`http://localhost:8080/inventory/`, {
+  const updateItem = async (contents, id) => {
+    console.log('udpating item');
+    const res = await fetch(`http://localhost:8080/inventory/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -138,9 +138,10 @@ const MyInventory = () => {
     );
   };
 
-  const handleEditingItem = (item) => {
+  const handleEditingItem = (item, id) => {
     setEditingItem(item);
     setItem({
+      id: item.id,
       item_name: item.item_name,
       description: item.description,
       quantity: item.quantity,
@@ -151,7 +152,7 @@ const MyInventory = () => {
   };
 
   const handleUpdateItem = async (e) => {
-    await updateItem({ ...editingItem, ...item });
+    await updateItem({ ...editingItem, ...item }, editingItem.id);
     Swal.fire({
       title: 'Success',
       text: 'Item updated.',
@@ -297,6 +298,7 @@ const MyInventory = () => {
                       <Button as={NavLink} to={`/item/${item.id}`}>
                         Item Details
                       </Button>
+
                       <Text>Item: {item.item_name}</Text>
                       <Text>
                         Description: {reducuceLength(item.description)}
