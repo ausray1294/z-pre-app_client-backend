@@ -2,7 +2,9 @@
 
 > Something magical will happen if you click ---> <---- and `CTRL/CMND + SHIFT + V`
 
-> Also did not manage to get the bugs worked out on User Story 5
+> Also did not manage to get the bugs worked out on User Story 5 or 6
+>
+> > Edit: Edit: I managed to get both of them working!!!!!!!!!!!! 20ish minutes till. This has been a `console.log(`nightmare`)` and I have to build this all over for my unit, YAY!!
 
 ## Know Bugs
 
@@ -131,7 +133,7 @@ npx knex seed:run
   [x] As an inventory manager I want to be able to see any individual item I have added.
 - The full item information should be displayed.
 
-[] 5. As an inventory manager I want to be able to edit an item so that I can fix any mistakes I made creating it.
+[x] 5. As an inventory manager I want to be able to edit an item so that I can fix any mistakes I made creating it.
 
 - [ Post fail on .update ]When the user toggles edit mode, the page remains the same and the fields become editable.
 
