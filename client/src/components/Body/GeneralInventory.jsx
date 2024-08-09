@@ -1,5 +1,4 @@
 import {
-  Heading,
   Box,
   Stack,
   Grid,
@@ -7,8 +6,11 @@ import {
   Card,
   CardBody,
   Text,
+  Button,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+
 
 const GeneralInventory = () => {
   const [inventory, setInventory] = useState([]);
@@ -49,12 +51,14 @@ const GeneralInventory = () => {
   };
 
   return (
-    <Box>
-      <Stack>
-        <Heading>Inventory</Heading>
-      </Stack>
-      <Stack mb={5}>
-        <Text>General Inventory</Text>
+    <Box mr={50}>
+      {/* <Stack>
+        <Heading sx={{ display: 'inline-flex', alignItems: 'center' }}>
+          Inventory
+        </Heading>
+      </Stack> */}
+      <Stack mb={5} sx={{ display: 'inline-flex', alignItems: 'center' }}>
+        <Text fontSize={40}>General Inventory</Text>
         <Grid
           className="inventoryList"
           templateColumns="repeat(3, 1fr)"
@@ -67,6 +71,7 @@ const GeneralInventory = () => {
                   <Text>Item: {item.item_name}</Text>
                   <Text>Description: {reducuceLength(item.description)}</Text>
                   <Text>Quantity: {item.quantity}</Text>
+                  <Button as={NavLink} to={`/item/${item.id}`}> More Details </Button>
                 </CardBody>
               </Card>
             </GridItem>

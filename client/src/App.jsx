@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, HStack, Card, Heading } from '@chakra-ui/react';
 import MyInventory from './components/Body/MyInventory';
 import GeneralInventory from './components/Body/GeneralInventory';
@@ -8,9 +8,12 @@ import Layout from './components/Layout/Layout';
 import AboutPage from './components/Body/AboutPage';
 import ReadMe from './components/Body/ReadMe';
 import User from './Class/UserClass';
+import { UserContext } from './context/UserContext';
+import { ItemDetails} from './components/Body/ItemDetails';
 
 function App() {
   const [user, setUser] = useState(new User());
+  const { id } = useContext(UserContext);
 
   return (
     <Box
@@ -34,7 +37,7 @@ function App() {
             border: 'gray.700',
           }}
         >
-          <GeneralInventory />
+          {!id ? <GeneralInventory /> : <MyInventory />}
         </HStack>
       </Box>
       <Card>
@@ -46,6 +49,7 @@ function App() {
               path="account-information"
               element={<AccountInformation user={user} />}
             />
+            <Route path="item/:id" element={<ItemDetails />} />
             <Route path="read-me" element={<ReadMe />} />
             <Route path="about" element={<AboutPage />} />
           </Route>

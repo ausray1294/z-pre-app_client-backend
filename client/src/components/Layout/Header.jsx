@@ -35,8 +35,9 @@ const Header = () => {
         }}
       >
         <Stack spacing={4} mb={8} alignItems="center">
-          <HomeButton />
+          {/* <HomeButton /> */}
           <Heading
+            onClick={() => HomeButton}
             fontStyle="italic"
             border="2px solid black"
             background="black"
