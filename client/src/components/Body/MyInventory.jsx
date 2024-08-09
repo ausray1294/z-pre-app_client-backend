@@ -91,14 +91,13 @@ const MyInventory = () => {
     }
   };
 
-  const removeFromInventory = async (item) => {
+  const removeFromInventory = async (id) => {
     console.log('removing from inventory');
-    const res = await fetch(`http://localhost:8080/inventory/`, {
+    const res = await fetch(`http://localhost:8080/inventory/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(item),
     });
     if (!res.ok) {
       console.log('Tried to delete the item but it no found');
@@ -122,9 +121,9 @@ const MyInventory = () => {
     });
   };
 
-  const updateItem = async (contents) => {
-    console.log('removing from inventory');
-    const res = await fetch(`http://localhost:8080/inventory/`, {
+  const updateItem = async (contents, id) => {
+    console.log('udpating item');
+    const res = await fetch(`http://localhost:8080/inventory/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -139,9 +138,10 @@ const MyInventory = () => {
     );
   };
 
-  const handleEditingItem = (item) => {
+  const handleEditingItem = (item, id) => {
     setEditingItem(item);
     setItem({
+      id: item.id,
       item_name: item.item_name,
       description: item.description,
       quantity: item.quantity,
@@ -152,7 +152,7 @@ const MyInventory = () => {
   };
 
   const handleUpdateItem = async (e) => {
-    await updateItem({ ...editingItem, ...item });
+    await updateItem({ ...editingItem, ...item }, editingItem.id);
     Swal.fire({
       title: 'Success',
       text: 'Item updated.',
@@ -295,7 +295,10 @@ const MyInventory = () => {
                 <GridItem className="inventoryItem" key={index}>
                   <Card>
                     <CardBody>
-                      <Button as={NavLink} to={`/item/${item.id}`}>Item Details</Button>
+                      <Button as={NavLink} to={`/item/${item.id}`}>
+                        Item Details
+                      </Button>
+
                       <Text>Item: {item.item_name}</Text>
                       <Text>
                         Description: {reducuceLength(item.description)}
@@ -314,7 +317,7 @@ const MyInventory = () => {
                         Edit Your Item
                       </Button>
 
-                      <Button onClick={() => handleRemoveItem(item)}>
+                      <Button onClick={() => handleRemoveItem(item.id)}>
                         Remove Item
                       </Button>
                     </CardBody>

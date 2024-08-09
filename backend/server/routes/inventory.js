@@ -24,13 +24,13 @@ async function createInventory(req, res) {
 
 async function updateInventoryItem(req, res) {
   const { id } = req.params;
-  const updated = await Inventory.update(id, req);
+  const updated = await Inventory.update(id, req.body);
   return res.json(updated);
 }
 
 async function deleteItem(req, res) {
-  console.log(req);
-  const deleted = await Inventory.remove(req.body.item_name);
+  console.log(req.params.id);
+  const deleted = await Inventory.remove(req.params.id);
   return res.json(deleted);
 }
 
