@@ -91,14 +91,13 @@ const MyInventory = () => {
     }
   };
 
-  const removeFromInventory = async (item) => {
+  const removeFromInventory = async (id) => {
     console.log('removing from inventory');
-    const res = await fetch(`http://localhost:8080/inventory/`, {
+    const res = await fetch(`http://localhost:8080/inventory/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(item),
     });
     if (!res.ok) {
       console.log('Tried to delete the item but it no found');
@@ -295,7 +294,9 @@ const MyInventory = () => {
                 <GridItem className="inventoryItem" key={index}>
                   <Card>
                     <CardBody>
-                      <Button as={NavLink} to={`/item/${item.id}`}>Item Details</Button>
+                      <Button as={NavLink} to={`/item/${item.id}`}>
+                        Item Details
+                      </Button>
                       <Text>Item: {item.item_name}</Text>
                       <Text>
                         Description: {reducuceLength(item.description)}
@@ -314,7 +315,7 @@ const MyInventory = () => {
                         Edit Your Item
                       </Button>
 
-                      <Button onClick={() => handleRemoveItem(item)}>
+                      <Button onClick={() => handleRemoveItem(item.id)}>
                         Remove Item
                       </Button>
                     </CardBody>

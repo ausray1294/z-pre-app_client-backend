@@ -29,8 +29,8 @@ async function updateInventoryItem(req, res) {
 }
 
 async function deleteItem(req, res) {
-  console.log(req);
-  const deleted = await Inventory.remove(req.body.item_name);
+  console.log(req.params.id);
+  const deleted = await Inventory.remove(req.params.id);
   return res.json(deleted);
 }
 

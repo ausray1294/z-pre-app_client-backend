@@ -135,9 +135,9 @@ npx knex seed:run
 
 - [ Post fail on .update ]When the user toggles edit mode, the page remains the same and the fields become editable.
 
-[] As an inventory manager I want to be able to delete an item so that I can remove any unwanted content.
+[x] As an inventory manager I want to be able to delete an item so that I can remove any unwanted content.
 
-- [ Getting ""`3 or whatevernumber`"" instead of `insert id here`]When the user deletes the item they should be redirected to their inventory of items.
+- [Edit: Fix It \\Getting ""`3 or whatevernumber`"" instead of `insert id here`\\]When the user deletes the item they should be redirected to their inventory of items.
 
 [x] As a visitor, who is not logged in, I want to be able to view all items created by every inventory manager so that I can browse every item.
 

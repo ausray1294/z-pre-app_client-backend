@@ -27,6 +27,6 @@ app.get('/inventory/:id', inventoryRoute.getInventory);
 app.get('/myinventory/:id', inventoryRoute.getAllInventoryByUser_Id);
 app.post('/inventory', inventoryRoute.createInventory);
 app.put('/inventory/', inventoryRoute.updateInventoryItem);
-app.delete('/inventory/', inventoryRoute.deleteItem);
+app.delete('/inventory/:id', inventoryRoute.deleteItem);
 
 module.exports = app;
