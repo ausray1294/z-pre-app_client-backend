@@ -1,5 +1,4 @@
 import {
-  Heading,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -20,9 +19,11 @@ import {
   Button,
   useDisclosure,
 } from '@chakra-ui/react';
+import { NavLink } from 'react-router-dom';
 import React, { useEffect, useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { RxDashboard } from 'react-icons/rx';
+
 // import User from '../../Class/UserClass';
 import { UserContext } from '../../context/UserContext';
 
@@ -32,7 +33,6 @@ const MyInventory = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { first_name, last_name, id } = useContext(UserContext);
   const [item, setItem] = useState({
-    id: null,
     item_name: '',
     description: '',
     quantity: '',
@@ -167,9 +167,9 @@ const MyInventory = () => {
     setEditingItem(null);
   };
 
-  const fetchMyInventory = async (id) => {
+  const fetchMyInventory = async (item_name) => {
     try {
-      const res = await fetch(`http://localhost:8080/myinventory/${id}`);
+      const res = await fetch(`http://localhost:8080/myinventory/${item_name}`);
       if (!res.ok) {
         throw new Error('Network response failed');
       }
@@ -200,9 +200,12 @@ const MyInventory = () => {
   return (
     <Box>
       <Stack>
-        <Heading>
+        <Text
+          fontSize={40}
+          sx={{ display: 'inline-flex', alignItems: 'center' }}
+        >
           ${first_name} ${last_name}'s Inventory
-        </Heading>
+        </Text>
       </Stack>
       <Button onClick={() => fetchMyInventory(id)}>
         Begin Rendering Your Items
@@ -219,7 +222,7 @@ const MyInventory = () => {
       >
         Add Item
       </Button>
-      <Stack>
+      <Stack sx={{ display: 'inline-flex', alignItems: 'center' }} mr={50}>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -252,7 +255,7 @@ const MyInventory = () => {
                 <FormControl id="quantity" isRequired>
                   <FormLabel>quantity</FormLabel>
                   <Input
-                    type="integer"
+                    type="number"
                     name="quantity"
                     value={item.quantity}
                     onChange={handleChange}
@@ -292,6 +295,7 @@ const MyInventory = () => {
                 <GridItem className="inventoryItem" key={index}>
                   <Card>
                     <CardBody>
+                      <Button as={NavLink} to={`/item/${item.id}`}>Item Details</Button>
                       <Text>Item: {item.item_name}</Text>
                       <Text>
                         Description: {reducuceLength(item.description)}
@@ -310,7 +314,7 @@ const MyInventory = () => {
                         Edit Your Item
                       </Button>
 
-                      <Button onClick={() => handleRemoveItem(item.item_name)}>
+                      <Button onClick={() => handleRemoveItem(item)}>
                         Remove Item
                       </Button>
                     </CardBody>

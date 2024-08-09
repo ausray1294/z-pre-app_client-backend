@@ -6,7 +6,7 @@ const AboutPage = () => {
       <Textarea>
         This is an app for looking at varying items that are either helicopters
         to boxer briefs. Enjoy clicking around and checkout the ReadMe link at
-        the bottom!
+        the left hand side or in the root directory!
       </Textarea>
     </Box>
   );

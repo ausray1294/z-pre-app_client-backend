@@ -8,7 +8,7 @@ async function getAllUsers(req, res) {
 }
 
 async function getUser(req, res) {
-  const username = req.params.username
+  const username = req.params.username;
   const user = await User.getByUsername(username);
   return res.send(user);
 }

@@ -12,12 +12,17 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { RxDashboard, RxRocket } from 'react-icons/rx';
+import {
+  RxDashboard,
+  RxRocket,
+  RxActivityLog,
+  RxAvatar,
+  RxBackpack,
+} from 'react-icons/rx';
 import CreateAccount from '../../utils/CreateAccount';
 import Swal from 'sweetalert2';
 import User from '../../Class/UserClass';
-import {UserContext} from '../../context/UserContext';
-
+import { UserContext } from '../../context/UserContext';
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -197,7 +202,7 @@ const NavBar = () => {
             to="/account-information"
             state={myProfile}
             variant="ghost"
-            leftIcon={<RxDashboard fontSize={20} />}
+            leftIcon={<RxAvatar fontSize={20} />}
             sx={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -213,6 +218,20 @@ const NavBar = () => {
         to="/inventory"
         state={myProfile}
         variant="ghost"
+        leftIcon={<RxBackpack fontSize={20} />}
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'start',
+        }}
+      >
+        My Inventory
+      </Button>
+      <Button
+        as={NavLink}
+        to="/"
+        state={myProfile}
+        variant="ghost"
         leftIcon={<RxRocket fontSize={20} />}
         sx={{
           display: 'inline-flex',
@@ -220,7 +239,35 @@ const NavBar = () => {
           justifyContent: 'start',
         }}
       >
-        Inventory
+        General Inventory
+      </Button>
+      <Button
+        as={NavLink}
+        to="/read-me"
+        state={myProfile}
+        variant="ghost"
+        leftIcon={<RxActivityLog fontSize={20} />}
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'start',
+        }}
+      >
+        Read Me
+      </Button>
+      <Button
+        as={NavLink}
+        to="/about"
+        state={myProfile}
+        variant="ghost"
+        leftIcon={<RxDashboard fontSize={20} />}
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'start',
+        }}
+      >
+        About
       </Button>
       {/* <Box sx={{ pl: '16rem' }}>
         <Container maxW="8xl">
